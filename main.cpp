@@ -73,6 +73,35 @@ GLContext::~GLContext()
 }
 
 
+
+class Timer
+{
+public:
+	Timer(Uint32, SDL_TimerCallback, void *);
+	~Timer();
+public:
+	SDL_TimerID timerId;
+};
+
+
+Timer::Timer(Uint32 interval, SDL_TimerCallback callback, void* params):
+	timerId(0)
+{
+	timerId = SDL_AddTimer(30, GameLoopTimer, nullptr);
+
+	if (0 == timerId)
+	{
+		throw runtime_error(SDL_GetError());
+	}
+}
+
+
+Timer::~Timer()
+{
+	SDL_RemoveTimer(timerId);
+}
+
+
 int main(int argc, char *argv[])
 {
     auto contextFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
@@ -103,7 +132,8 @@ int main(int argc, char *argv[])
     // I use a near plane value of -1, and a far plane value of 1, which is what works best for 2D games.
     glOrtho(0.0, projectionWidth, 0.0, projectionHeight, -1.0, 1.0);
 
-    auto timer = SDL_AddTimer(30, GameLoopTimer, nullptr);
+	// auto timer = SDL_AddTimer(30, GameLoopTimer, nullptr);
+	Timer timer(30, GameLoopTimer, nullptr);
 
     SDL_Event event;
 
@@ -138,10 +168,6 @@ int main(int argc, char *argv[])
         }   // End switch
 
     }   // End while
-
-
-    SDL_bool success;
-    success = SDL_RemoveTimer(timer);
 
     return 0;
 }
