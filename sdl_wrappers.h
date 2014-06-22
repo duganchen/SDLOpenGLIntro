@@ -25,16 +25,6 @@ private:
 };
 
 
-class Timer
-{
-public:
-	Timer(Uint32, SDL_TimerCallback, void *);
-	~Timer();
-public:
-	SDL_TimerID timerId;
-};
-
-
 // And exception-safe factory functions for SDL2 types that we can.
 
 std::shared_ptr<SDL_Window> createWindow(const std::string, int, int, int, int, Uint32 flags);

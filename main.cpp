@@ -6,10 +6,6 @@
 
 using namespace std;
 
-const auto RUN_GAME_LOOP = 1;
-
-Uint32 GameLoopTimer(Uint32, void*);
-
 
 int main(int argc, char *argv[])
 {
@@ -30,28 +26,17 @@ int main(int argc, char *argv[])
 	const auto projectionHeight = 3.0;
 	glOrtho(0.0, projectionWidth, 0.0, projectionHeight, -1.0, 1.0);
 
-	Timer timer(30, GameLoopTimer, nullptr);
-
 	SDL_Event event;
 
 	auto done = false;
 	while((!done) && (SDL_WaitEvent(&event)))
 	{
+		glClear(GL_COLOR_BUFFER_BIT); glColor3f(0.7, 0.5, 0.8);
+		glRectf(1.0, 1.0, 3.0, 2.0);
+		SDL_GL_SwapWindow(window.get());
+
 		switch(event.type)
 		{
-			case SDL_USEREVENT:
-				switch (event.user.code)
-				{
-					case RUN_GAME_LOOP:
-						glClear(GL_COLOR_BUFFER_BIT); glColor3f(0.7, 0.5, 0.8);
-						glRectf(1.0, 1.0, 3.0, 2.0);
-						SDL_GL_SwapWindow(window.get());
-						break;
-					default:
-						break;
-				}
-				break;
-
 			case SDL_KEYDOWN:
 				// Quit when user presses a key.
 				done = true;
@@ -64,23 +49,9 @@ int main(int argc, char *argv[])
 			default:
 				break;
 		}   // End switch
+
+		SDL_Delay(30);
 	}   // End while
 
 	return 0;
-}
-
-
-Uint32 GameLoopTimer(Uint32 interval, void* param)
-{
-	// Create a user event to call the game loop.
-	SDL_Event event;
-
-	event.type = SDL_USEREVENT;
-	event.user.code = RUN_GAME_LOOP;
-	event.user.data1 = 0;
-	event.user.data2 = 0;
-
-	SDL_PushEvent(&event);
-
-	return interval;
 }

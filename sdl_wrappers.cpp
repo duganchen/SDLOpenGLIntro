@@ -36,18 +36,6 @@ GLContext::~GLContext()
 
 
 
-Timer::Timer(Uint32 interval, SDL_TimerCallback callback, void* params):
-	timerId(0)
-{
-	timerId = SDL_AddTimer(30, callback, nullptr);
-
-	if (0 == timerId)
-	{
-		throw runtime_error(SDL_GetError());
-	}
-}
-
-
 Timer::~Timer()
 {
 	SDL_RemoveTimer(timerId);
