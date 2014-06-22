@@ -102,6 +102,17 @@ Timer::~Timer()
 }
 
 
+shared_ptr<SDL_Window> createWindow(const string title, int x, int y, int w, int h, Uint32 flags)
+{
+	auto rawWindow = SDL_CreateWindow(title, x, y, w, h, flags);
+	if (nullptr == rawWindow)
+	{
+		throw runtime_error(SDL_GetError());
+	}
+	shared_ptr<SDL_Window> window(rawWindow, SDL_DestroyWindow);
+}
+
+
 int main(int argc, char *argv[])
 {
     auto contextFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
@@ -116,13 +127,7 @@ int main(int argc, char *argv[])
     // Turn on double buffering.
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // Create the window
-    auto rawWindow = SDL_CreateWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
-	if (nullptr == rawWindow)
-	{
-		throw runtime_error(SDL_GetError());
-	}
-	shared_ptr<SDL_Window> window(rawWindow, SDL_DestroyWindow);
+	auto window = createWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
 
 	GLContext context(window);
 
