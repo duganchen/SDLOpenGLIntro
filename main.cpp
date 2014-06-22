@@ -27,11 +27,13 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 
 	auto done = false;
-	while((!done) && (SDL_WaitEvent(&event)))
+	while((!done))
 	{
 		glClear(GL_COLOR_BUFFER_BIT); glColor3f(0.7, 0.5, 0.8);
 		glRectf(1.0, 1.0, 3.0, 2.0);
 		SDL_GL_SwapWindow(window.get());
+
+		waitEvent(&event);
 
 		switch(event.type)
 		{
