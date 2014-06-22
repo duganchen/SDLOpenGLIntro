@@ -1,4 +1,5 @@
 #include <GL/gl.h>
+#include <memory>
 #include <stdexcept>
 #include "SDL.h"
 
@@ -63,8 +64,14 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // Create the window
-    auto mainWindow = SDL_CreateWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
-    auto mainGLContext = SDL_GL_CreateContext(mainWindow);
+    auto rawWindow = SDL_CreateWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
+	if (nullptr == rawWindow)
+	{
+		throw runtime_error(SDL_GetError());
+	}
+	shared_ptr<SDL_Window> window(rawWindow, SDL_DestroyWindow);
+
+    auto mainGLContext = SDL_GL_CreateContext(window.get());
 
 	const auto projectionWidth = 4.0;
 	const auto projectionHeight = 3.0;
@@ -86,7 +93,7 @@ int main(int argc, char *argv[])
 						glClear(GL_COLOR_BUFFER_BIT);
     					glColor3f(0.7, 0.5, 0.8);
     					glRectf(1.0, 1.0, 3.0, 2.0);
-    					SDL_GL_SwapWindow(mainWindow);
+    					SDL_GL_SwapWindow(window.get());
     			        break;
     			    default:
     			        break;
@@ -113,7 +120,6 @@ int main(int argc, char *argv[])
     success = SDL_RemoveTimer(timer);
 
     SDL_GL_DeleteContext(mainGLContext);
-    SDL_DestroyWindow(mainWindow);
 
     return 0;
 }
