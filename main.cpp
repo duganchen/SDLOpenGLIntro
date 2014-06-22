@@ -1,12 +1,8 @@
-/*
- *  main.cpp
- *
- */
-
-// #include "GameApp.h"
-
 #include <GL/gl.h>
+#include <stdexcept>
 #include "SDL.h"
+
+using namespace std;
 
 const auto RUN_GAME_LOOP = 1;
 
@@ -26,6 +22,30 @@ Uint32 GameLoopTimer(Uint32 interval, void* param)
 }
 
 
+class SDL
+{
+public:
+    SDL();
+	~SDL();
+};
+
+
+SDL::SDL()
+{
+    if (SDL_Init(SDL_INIT_EVERYTHING))
+	{
+		throw runtime_error(SDL_GetError());
+	}
+}
+
+
+SDL::~SDL()
+{
+    SDL_Quit();
+}
+
+
+
 int main(int argc, char *argv[])
 {
     // GameApp theGame;
@@ -37,7 +57,8 @@ int main(int argc, char *argv[])
 	const auto width = 640;
 	const auto height = 480;
 
-    SDL_Init(SDL_INIT_EVERYTHING);
+	SDL();
+
     // Turn on double buffering.
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -45,18 +66,13 @@ int main(int argc, char *argv[])
     auto mainWindow = SDL_CreateWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
     auto mainGLContext = SDL_GL_CreateContext(mainWindow);
 
-    // theGame.CreateOrthographicProjection(4.0, 3.0);
 	const auto projectionWidth = 4.0;
 	const auto projectionHeight = 3.0;
 
     // I use a near plane value of -1, and a far plane value of 1, which is what works best for 2D games.
     glOrtho(0.0, projectionWidth, 0.0, projectionHeight, -1.0, 1.0);
 
-    // theGame.InstallTimer();
-
     auto timer = SDL_AddTimer(30, GameLoopTimer, nullptr);
-
-	// theGame.EventLoop();
 
     SDL_Event event;
 
@@ -64,11 +80,9 @@ int main(int argc, char *argv[])
     while((!done) && (SDL_WaitEvent(&event))) {
         switch(event.type) {
             case SDL_USEREVENT:
-                // theGame.HandleUserEvents(&event);
 				switch (event.user.code)
 				{
     			    case RUN_GAME_LOOP:
-    			        // GameLoop();
 						glClear(GL_COLOR_BUFFER_BIT);
     					glColor3f(0.7, 0.5, 0.8);
     					glRectf(1.0, 1.0, 3.0, 2.0);
@@ -95,14 +109,11 @@ int main(int argc, char *argv[])
     }   // End while
 
 
-    // theGame.Cleanup();
-
     SDL_bool success;
     success = SDL_RemoveTimer(timer);
 
     SDL_GL_DeleteContext(mainGLContext);
     SDL_DestroyWindow(mainWindow);
-    SDL_Quit();
 
     return 0;
 }
