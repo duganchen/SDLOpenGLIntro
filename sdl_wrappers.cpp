@@ -35,13 +35,6 @@ GLContext::~GLContext()
 }
 
 
-
-Timer::~Timer()
-{
-	SDL_RemoveTimer(timerId);
-}
-
-
 shared_ptr<SDL_Window> createWindow(const string title, int x, int y, int w, int h, Uint32 flags)
 {
 	auto rawWindow = SDL_CreateWindow(title.c_str(), x, y, w, h, flags);
