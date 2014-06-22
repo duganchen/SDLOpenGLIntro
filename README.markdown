@@ -4,7 +4,7 @@ SDL OpenGL Intro Read Me
 This is a heavily refactored fork of the SDLOpenGLIntro SDL2 tutorial, which
 may be found here:
 
-https://github.com/meandmark/SDLOpenGLIntro
+https://github.com/meandmark/SDLOpenGLIntro/tree/sdl2
 
 This version uses CMake as the build system and is written for exception safety. It expects a C++11 compiler.
 
