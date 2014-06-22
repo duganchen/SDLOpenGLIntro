@@ -1,6 +1,4 @@
 #include <GL/gl.h>
-#include <memory>
-#include <stdexcept>
 #include "SDL.h"
 #include "sdl_wrappers.h"
 
