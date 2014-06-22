@@ -5,7 +5,7 @@ may be found here:
 
 https://github.com/meandmark/SDLOpenGLIntro
 
-This version uses CMake as the build system and is written for exception safety, using C++11.
+This version uses CMake as the build system and is written for exception safety. It expects a C++11 compiler.
 
 The program provides a simple example of a SDL program that uses OpenGL. It
 creates a window and draws a purple rectangle in the window. Press a key on the
