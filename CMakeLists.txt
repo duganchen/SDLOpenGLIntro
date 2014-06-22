@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(SDLOpengGLIntro)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -pedantic")
 
 ADD_EXECUTABLE(SDLOpenGLIntro main.cpp sdl_wrappers.cpp)
 FIND_PACKAGE(SDL2 REQUIRED)
