@@ -2,10 +2,12 @@
 #include <memory>
 #include <stdexcept>
 #include "SDL.h"
+#include "sdl_wrappers.h"
 
 using namespace std;
 
 const auto RUN_GAME_LOOP = 1;
+
 
 Uint32 GameLoopTimer(Uint32 interval, void* param)
 {
@@ -23,121 +25,26 @@ Uint32 GameLoopTimer(Uint32 interval, void* param)
 }
 
 
-class SDL
-{
-public:
-    SDL();
-	~SDL();
-};
-
-
-SDL::SDL()
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING))
-	{
-		throw runtime_error(SDL_GetError());
-	}
-}
-
-
-SDL::~SDL()
-{
-    SDL_Quit();
-}
-
-
-class GLContext
-{
-public:
-	GLContext(shared_ptr<SDL_Window>);
-	~GLContext();
-private:
-	SDL_GLContext context;
-};
-
-
-GLContext::GLContext(shared_ptr<SDL_Window> window):
-	context(nullptr)
-{
-	context = SDL_GL_CreateContext(window.get());
-	if (nullptr == context)
-	{
-		throw runtime_error(SDL_GetError());
-	}
-}
-
-
-GLContext::~GLContext()
-{
-	SDL_GL_DeleteContext(context);
-}
-
-
-
-class Timer
-{
-public:
-	Timer(Uint32, SDL_TimerCallback, void *);
-	~Timer();
-public:
-	SDL_TimerID timerId;
-};
-
-
-Timer::Timer(Uint32 interval, SDL_TimerCallback callback, void* params):
-	timerId(0)
-{
-	timerId = SDL_AddTimer(30, GameLoopTimer, nullptr);
-
-	if (0 == timerId)
-	{
-		throw runtime_error(SDL_GetError());
-	}
-}
-
-
-Timer::~Timer()
-{
-	SDL_RemoveTimer(timerId);
-}
-
-
-shared_ptr<SDL_Window> createWindow(const string title, int x, int y, int w, int h, Uint32 flags)
-{
-	auto rawWindow = SDL_CreateWindow(title, x, y, w, h, flags);
-	if (nullptr == rawWindow)
-	{
-		throw runtime_error(SDL_GetError());
-	}
-	shared_ptr<SDL_Window> window(rawWindow, SDL_DestroyWindow);
-}
-
 
 int main(int argc, char *argv[])
 {
-    auto contextFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-
-    // Create a 640 by 480 window.
-
-	const auto width = 640;
-	const auto height = 480;
-
 	SDL();
 
     // Turn on double buffering.
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    // Create a 640 by 480 window.
+	const auto width = 640;
+	const auto height = 480;
+    auto contextFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 	auto window = createWindow("SDL2 OpenGL Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, contextFlags);
-
 	GLContext context(window);
 
+    // I use a near plane value of -1, and a far plane value of 1, which is what works best for 2D games.
 	const auto projectionWidth = 4.0;
 	const auto projectionHeight = 3.0;
-
-    // I use a near plane value of -1, and a far plane value of 1, which is what works best for 2D games.
     glOrtho(0.0, projectionWidth, 0.0, projectionHeight, -1.0, 1.0);
 
-	// auto timer = SDL_AddTimer(30, GameLoopTimer, nullptr);
 	Timer timer(30, GameLoopTimer, nullptr);
 
     SDL_Event event;
