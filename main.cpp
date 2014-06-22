@@ -46,15 +46,39 @@ SDL::~SDL()
 }
 
 
+class GLContext
+{
+public:
+	GLContext(shared_ptr<SDL_Window>);
+	~GLContext();
+private:
+	SDL_GLContext context;
+};
+
+
+GLContext::GLContext(shared_ptr<SDL_Window> window):
+	context(nullptr)
+{
+	context = SDL_GL_CreateContext(window.get());
+	if (nullptr == context)
+	{
+		throw runtime_error(SDL_GetError());
+	}
+}
+
+
+GLContext::~GLContext()
+{
+	SDL_GL_DeleteContext(context);
+}
+
 
 int main(int argc, char *argv[])
 {
-    // GameApp theGame;
-
-    auto contextFlags = SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL;
+    auto contextFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
     // Create a 640 by 480 window.
-    // theGame.InitializeSDL(640, 480, contextFlags);
+
 	const auto width = 640;
 	const auto height = 480;
 
@@ -71,7 +95,7 @@ int main(int argc, char *argv[])
 	}
 	shared_ptr<SDL_Window> window(rawWindow, SDL_DestroyWindow);
 
-    auto mainGLContext = SDL_GL_CreateContext(window.get());
+	GLContext context(window);
 
 	const auto projectionWidth = 4.0;
 	const auto projectionHeight = 3.0;
@@ -118,8 +142,6 @@ int main(int argc, char *argv[])
 
     SDL_bool success;
     success = SDL_RemoveTimer(timer);
-
-    SDL_GL_DeleteContext(mainGLContext);
 
     return 0;
 }
