@@ -8,22 +8,7 @@ using namespace std;
 
 const auto RUN_GAME_LOOP = 1;
 
-
-Uint32 GameLoopTimer(Uint32 interval, void* param)
-{
-	// Create a user event to call the game loop.
-	SDL_Event event;
-
-	event.type = SDL_USEREVENT;
-	event.user.code = RUN_GAME_LOOP;
-	event.user.data1 = 0;
-	event.user.data2 = 0;
-
-	SDL_PushEvent(&event);
-
-	return interval;
-}
-
+Uint32 GameLoopTimer(Uint32, void*);
 
 
 int main(int argc, char *argv[])
@@ -82,4 +67,20 @@ int main(int argc, char *argv[])
 	}   // End while
 
 	return 0;
+}
+
+
+Uint32 GameLoopTimer(Uint32 interval, void* param)
+{
+	// Create a user event to call the game loop.
+	SDL_Event event;
+
+	event.type = SDL_USEREVENT;
+	event.user.code = RUN_GAME_LOOP;
+	event.user.data1 = 0;
+	event.user.data2 = 0;
+
+	SDL_PushEvent(&event);
+
+	return interval;
 }
