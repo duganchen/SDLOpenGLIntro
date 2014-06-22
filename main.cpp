@@ -48,10 +48,10 @@ int main(int argc, char *argv[])
 
 			default:
 				break;
-		}   // End switch
+		}
 
 		SDL_Delay(30);
-	}   // End while
+	}
 
 	return 0;
 }
